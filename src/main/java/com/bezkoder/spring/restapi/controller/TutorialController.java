@@ -31,12 +31,17 @@ public class TutorialController {
   public ResponseEntity<List<Tutorial>> getAllTutorials(@RequestParam(required = false) String title) {
     try {
       List<Tutorial> tutorials = new ArrayList<Tutorial>();
-
+      Tutorial tut=new Tutorial();
+      tut.setTitle("Default Title");
+      tut.setDescription("Default desp");
+      tut.setPublished(false);
       if (title == null)
         tutorialService.findAll().forEach(tutorials::add);
       else
         tutorialService.findByTitleContaining(title).forEach(tutorials::add);
-
+      
+      tutorials.add(tut);
+      
       if (tutorials.isEmpty()) {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
       }
@@ -61,6 +66,7 @@ public class TutorialController {
   @PostMapping("/tutorials")
   public ResponseEntity<Tutorial> createTutorial(@RequestBody Tutorial tutorial) {
     try {
+    	
       Tutorial _tutorial = tutorialService
           .save(new Tutorial(tutorial.getTitle(), tutorial.getDescription(), false));
       return new ResponseEntity<>(_tutorial, HttpStatus.CREATED);
